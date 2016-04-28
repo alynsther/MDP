@@ -58,6 +58,8 @@ public class ValueIterationMDP {
 
     public static void main (String[] args) {
     	//ValueIterationMDP MDP= new ValueIterationMDP();
+        
+        long start = System.currentTimeMillis();
     	
     	//gets and sets values from command line
     	discountFactor=Double.parseDouble(args[0]);
@@ -83,6 +85,9 @@ public class ValueIterationMDP {
     
     	// show method that prints utilities and policy
     	printUtilitiesAndPolicy(utility, policy);
+        
+        long end = System.currentTimeMillis();
+        System.out.println("The duration of the progam is " + (end-start) + " milliseconds");
 
     }
 
