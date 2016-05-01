@@ -143,8 +143,8 @@ public class ValueIterationMDP {
     public static void valIter(double[][][] T, double[] R){
     	double delta; // maximum change in the utility of any state in an iteration
     	double[] util2 = new double[NUM_STATES]; //second utiltiy array
-    	double maxVal; //stores the updates maxSum of a given action
-    	double sum; // stores the updated sum the T[s1][a][s2]*U[s1] for a given action
+    	double maxVal = Double.NEGATIVE_INFINITY; //stores the updates maxSum of a given action
+    	double sum = 0; // stores the updated sum the T[s1][a][s2]*U[s1] for a given action
     	int count = 0; //stores the number of iterations
     	
     	//initialize both utility arrays to 0
@@ -153,11 +153,7 @@ public class ValueIterationMDP {
     		util2[i] = 0;
     	}
     	
-    	//initialize maxVal and sum
-    	maxVal = Double.NEGATIVE_INFINITY;
-    	sum = 0;
-    	
-    	do{
+        do{
     		//set utility=util2
     		for(int i = 0; i < NUM_STATES; i++){
     			utility[i] = util2[i];
