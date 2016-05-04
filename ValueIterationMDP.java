@@ -130,7 +130,7 @@ public class ValueIterationMDP {
     	printUtilitiesAndPolicy(utility, policy);
         
         long end = System.currentTimeMillis();
-        System.out.println("The duration of the progam is " + (end-start) + " milliseconds");
+        System.out.println("The duration of value iteration is " + (end-start) + " milliseconds");
 
     }
 
@@ -142,22 +142,23 @@ public class ValueIterationMDP {
      *****************************************************************************/
     public static void valIter(double[][][] T, double[] R){
     	double delta; // maximum change in the utility of any state in an iteration
-    	double[] util2 = new double[NUM_STATES]; //second utiltiy array
+    	// double[] util2 = new double[NUM_STATES]; //second utiltiy array
     	double maxVal = Double.NEGATIVE_INFINITY; //stores the updates maxSum of a given action
     	double sum = 0; // stores the updated sum the T[s1][a][s2]*U[s1] for a given action
+        double util2 = 0;      //stores the updated utility at the current state
     	int count = 0; //stores the number of iterations
     	
     	//initialize both utility arrays to 0
-    	for(int i=0; i< NUM_STATES; i++){
-    		utility[i] = 0;
-    		util2[i] = 0;
-    	}
+    	// for(int i=0; i< NUM_STATES; i++){
+    	// 	utility[i] = 0;
+    	// 	util2[i] = 0;
+    	// }
     	
         do{
     		//set utility=util2
-    		for(int i = 0; i < NUM_STATES; i++){
-    			utility[i] = util2[i];
-    		}
+    		// for(int i = 0; i < NUM_STATES; i++){
+    		// 	utility[i] = util2[i];
+    		// }
     		delta = 0;
     		
     		//state 1
@@ -178,10 +179,14 @@ public class ValueIterationMDP {
     				} 				    				
     			}//loop a
     			
-    			util2[s1] = R[s1] + discountFactor * maxVal;
-    			if(Math.abs(util2[s1] - utility[s1]) > delta){
-					delta = Math.abs(util2[s1] - utility[s1]);
+    			// util2[s1] = R[s1] + discountFactor * maxVal;
+                util2 = R[s1] + discountFactor * maxVal;
+
+    			if(Math.abs(util2 - utility[s1]) > delta){
+					delta = Math.abs(util2 - utility[s1]);
     			}
+
+                utility[s1] = util2;
 			}//loop s1
     		count++;
     	} while(delta >= (maxStateUtilityError * (1-discountFactor) / discountFactor));
