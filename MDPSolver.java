@@ -128,15 +128,19 @@ public class MDPSolver {
         //CHECK THIS FUNCTION
     	//performs the valueIteration given T and R
     	// valIter(T,R);
+        
         // valueIteration();
 
-        createRandomPolicy();
+        // createRandomPolicy();
 
+        // printUtilitiesAndPolicy();
 
-        policyEvaluation();
+        // policyEvaluation();
+
+        policyIteration();
     
     	// show method that prints utilities and policy
-    	// printUtilitiesAndPolicy(utility, policy);
+    	printUtilitiesAndPolicy(utility, policy);
         
         long end = System.currentTimeMillis();
         System.out.println("The duration of value iteration is " + (end-start) + " milliseconds");
@@ -168,14 +172,14 @@ public class MDPSolver {
     		// for(int i = 0; i < NUM_STATES; i++){
     		// 	utility[i] = util2[i];
     		// }
-    		delta = 0;
+    		delta = 0.0;
     		
     		//state 1
     		for(int s1 = 0; s1 < NUM_STATES; s1++){
     			maxVal = Double.NEGATIVE_INFINITY;
     			//action
     			for(int a = 0; a < NUM_ACTIONS; a++){
-    				sum = 0;
+    				sum = 0.0;
     				//state 2
     				for(int s2 = 0; s2 < NUM_STATES; s2++){
     					sum += T[s1][a][s2] * utility[s2];
@@ -210,18 +214,63 @@ public class MDPSolver {
     }
     
     // //WHO WRITES THIS: 
-    // public static void policyIteration() {
+    public static void policyIteration() {
 
-    //     boolean policyChanged = true
+        boolean policyUnchanged = true;
 
-    //     createRandomPolicy();
+        boolean oldValComputed = false;
 
-    //     do {
+        double maxVal, sum = 0.0;
 
+        double oldVal = 0.0;
 
+        int bestAction = N;
 
-    //     } while ()
-    // }
+        createRandomPolicy();
+
+        do {
+
+            policyEvaluation();
+
+            policyUnchanged = true;
+
+            for (int s = 0; s < NUM_STATES; s++) {
+                
+                oldValComputed = false;
+
+                maxVal = Double.NEGATIVE_INFINITY;
+
+                //action
+                for(int a = 0; a < NUM_ACTIONS; a++){
+                    sum = 0.0;
+                    //state 2
+                    for(int sP = 0; sP < NUM_STATES; sP++){
+                        sum += T[s][a][sP] * utility[sP];
+                        if (oldValComputed == false) {
+                            oldVal += T[s][policy[s]][s] * utility[sP];
+                        }
+                    }//loop s2
+
+                    oldValComputed = true;
+                    
+                    //updates maxVal and sets policy for action with maxVal
+                    if(sum > maxVal){
+                        bestAction = a;
+                        maxVal = sum;
+                    }                                   
+                }//loop a
+
+                if (maxVal > oldVal) {
+                    policy[s] = bestAction;
+                    policyUnchanged = false;
+                }
+                
+                // util2[s1] = R[s1] + discountFactor * maxVal;
+                // util2 = R[s1] + discountFactor * maxVal;
+            }
+
+        } while (policyUnchanged == true);
+    }
 
     public static void policyEvaluation() {
 
@@ -260,38 +309,39 @@ public class MDPSolver {
             for (int sP = 0; sP < NUM_STATES; sP++) {
 
                 if (s != sP) {
-                    coefficientMatrix[s][sP] = discountFactor * T[s][policy[s]][sP] * utility[sP] * (-1.0);
+                    coefficientMatrix[s][sP] = discountFactor * T[s][policy[s]][sP] * (-1.0);
                 }
                 else {
-                    coefficientMatrix[s][sP] = utility[s] + discountFactor * T[s][policy[s]][sP] * utility[sP];
+                    coefficientMatrix[s][sP] = 1 + discountFactor * T[s][policy[s]][sP];
                 }
 
-                if (s == 40) {
-                    System.out.println(T[s][policy[s]][sP]);
-                }
+                // if (s == 40) {
+                //     System.out.println(T[s][policy[s]][sP]);
+                // }
 
             }
 
             valueMatrix[s][0] = R[s];
         }
 
-        // Matrix CoM = new Matrix(coefficientMatrix);
-        // Matrix VaM = new Matrix(valueMatrix);
+        Matrix CoM = new Matrix(coefficientMatrix);
+        Matrix VaM = new Matrix(valueMatrix);
 
-        // Matrix ResultM = CoM.solve(VaM);
-
-        // for (int i = 0; i < NUM_STATES; i++) {
-        //     utility[i] = ResultM.getArray()[i][0];
-        // }
-
-        System.out.println(NUM_STATES);
+        Matrix ResultM = CoM.solve(VaM);
 
         for (int i = 0; i < NUM_STATES; i++) {
-            for (int j = 0; j < NUM_STATES; j++) {
-                System.out.print(coefficientMatrix[i][j]);
-            }
-            System.out.println("");
+            utility[i] = ResultM.getArray()[i][0];
+            // System.out.println(utility[i]);
         }
+
+        // System.out.println(NUM_STATES);
+
+        // for (int i = 0; i < NUM_STATES; i++) {
+        //     for (int j = 0; j < NUM_STATES; j++) {
+        //         System.out.print(coefficientMatrix[i][j]);
+        //     }
+        //     System.out.println("");
+        // }
 
     }
  
