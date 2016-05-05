@@ -1,5 +1,5 @@
 /*****************************************************************************
- File:   ValueIterationMDP.java
+ File:   MDPSolver.java
  Author: Son Ngo, Venecia Xu, Adela Yang
  Date:   April 2016
  
@@ -9,6 +9,8 @@
  Running instructions:
  javac ValueIterationMDP.java
  java ValueIterationMDP discount error key positive negative step solution
+ 
+ java MDP 0.99 1e-6 0.5 1 -1 -0.04 v
 
  ******************************************************************************/
 
@@ -26,7 +28,7 @@ import java.io.*;
 import java.lang.Math.*;
 
 
-public class ValueIterationMDP {
+public class MDPSolver {
 
     /**********************************************************************/
     /* provided by Majercik */
