@@ -105,8 +105,6 @@ public class MDPSolver {
             System.out.println("Please input the correct number of arguments given the guideline shown.");
             System.exit(1);
         }
-        
-        long start = System.currentTimeMillis();
     	
     	//gets and sets values from command line
     	discountFactor = Double.parseDouble(args[0]);
@@ -132,23 +130,29 @@ public class MDPSolver {
         //CHECK THIS FUNCTION
     	//performs the valueIteration given T and R
     	// valIter(T,R);
-        
-        // valueIteration();
 
-        // createRandomPolicy();
+        int numIterations = 0;
 
-        // printUtilitiesAndPolicy();
+        long start = System.currentTimeMillis();
+        if (solutionTechnique.equals("v")) {
+            solutionTechnique = "value iteration";
+            valueIteration();
+            numIterations = numValueIterations;
+        }
+        else if (solutionTechnique.equals("p")) {
+            solutionTechnique = "policy iteration";
+            policyIteration();
+            numIterations = numPolicyIterations;
+        }
 
-        // policyEvaluation();
-
-        policyIteration();
-    
-    	// show method that prints utilities and policy
-    	printUtilitiesAndPolicy(utility, policy);
-        
         long end = System.currentTimeMillis();
-        System.out.println("The duration of value iteration is " + (end-start) + " milliseconds");
-        System.out.println("Number of iterations for policy is " + numPolicyIterations);
+
+        printUtilitiesAndPolicy(utility, policy);
+    
+    	// show method that prints utilities and policy     
+        
+        System.out.println("The duration of " + solutionTechnique + " is " + (end-start) + " milliseconds");
+        System.out.println("Number of iterations for " + solutionTechnique + " is " + numIterations + " iterations" );
 
     }
 
@@ -324,7 +328,7 @@ public class MDPSolver {
                     coefficientMatrix[s][sP] = discountFactor * T[s][policy[s]][sP] * (-1.0);
                 }
                 else {
-                    coefficientMatrix[s][sP] = 1 + discountFactor * T[s][policy[s]][sP];
+                    coefficientMatrix[s][sP] = 1 - discountFactor * T[s][policy[s]][sP];
                 }
 
                 // if (s == 40) {
