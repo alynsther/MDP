@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: majercik-green-pso.aux
+The style file: apalike.bst
+Database file #1: references.bib
+Warning--empty publisher in santana-quintero08
+Warning--empty publisher in reyes-sierra07
+You've used 10 entries,
+            1935 wiz_defined-function locations,
+            526 strings with 5361 characters,
+and the built_in function-call counts, 4807 in all, are:
+= -- 487
+> -- 140
+< -- 16
++ -- 47
+- -- 44
+* -- 346
+:= -- 735
+add.period$ -- 30
+call.type$ -- 10
+change.case$ -- 72
+chr.to.int$ -- 9
+cite$ -- 12
+duplicate$ -- 234
+empty$ -- 380
+format.name$ -- 70
+if$ -- 1058
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 10
+newline$ -- 53
+num.names$ -- 30
+pop$ -- 86
+preamble$ -- 1
+purify$ -- 72
+quote$ -- 0
+skip$ -- 189
+stack$ -- 0
+substring$ -- 356
+swap$ -- 76
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 60
+warning$ -- 2
+while$ -- 39
+width$ -- 0
+write$ -- 133
+(There were 2 warnings)

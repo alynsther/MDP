@@ -1,0 +1,62 @@
+\begin{thebibliography}{}
+
+\bibitem[Akat and Gazi, 2008a]{akat08b}
+Akat, S. and Gazi, V. (2008a).
+\newblock Decentralized asynchronous particle swarm optimization.
+\newblock In {\em Swarm Intelligence Symposium, 2008. SIS 2008. IEEE}, pages 1
+  --8.
+
+\bibitem[Akat and Gazi, 2008b]{akat08a}
+Akat, S. and Gazi, V. (2008b).
+\newblock Particle swarm optimization with dynamic neighborhood topology: Three
+  neighborhood strategies and preliminary results.
+\newblock In {\em Swarm Intelligence Symposium, 2008. SIS 2008. IEEE}, pages 1
+  --8.
+
+\bibitem[Bratton and Kennedy, 2007]{bratton07}
+Bratton, D. and Kennedy, J. (2007).
+\newblock Defining a standard for particle swarm optimization.
+\newblock In {\em Swarm Intelligence Symposium, 2007. SIS 2007. IEEE}, pages
+  120--127.
+
+\bibitem[Garc\'{\i}a-Nieto and Alba, 2012]{garcia-nieto12}
+Garc\'{\i}a-Nieto, J. and Alba, E. (2012).
+\newblock Why six informants is optimal in {PSO}.
+\newblock In {\em Proceedings of the fourteenth international conference on
+  Genetic and evolutionary computation conference}, GECCO '12, pages 25--32.
+
+\bibitem[Kennedy and Eberhart, 1995]{kennedy95}
+Kennedy, J. and Eberhart, R. (1995).
+\newblock Particle swarm optimization.
+\newblock {\em Proceedings of IEEE}, pages 1942--1948.
+
+\bibitem[Landa-Becerra et~al., 2008]{santana-quintero08}
+Landa-Becerra, R., Santana-Quintero, L.~V., and {Coello Coello}, C.~A. (2008).
+\newblock Knowledge incorporation in multi-objective evolutionary algorithms.
+\newblock In {\em Multi-Objective Evolutionary Algorithms for Knowledge
+  Discovery from Databases}, pages 23--46.
+
+\bibitem[Monson and Seppi, 2005]{monson05}
+Monson, C.~K. and Seppi, K.~D. (2005).
+\newblock Exposing origin-seeking bias in {PSO}.
+\newblock In {\em GECCO}, pages 241--248.
+
+\bibitem[Poli et~al., 2007]{poli07}
+Poli, R., Kennedy, J., and Blackwell, T. (2007).
+\newblock Particle swarm optimization: An overview.
+\newblock {\em Swarm Intelligence}, 1:33--57.
+
+\bibitem[Reyes-Sierra and {Coello Coello}, 2007]{reyes-sierra07}
+Reyes-Sierra, M. and {Coello Coello}, C.~A. (2007).
+\newblock A study of techniques to improve the efficiency of a multi-objective
+  particle swarm optimizer.
+\newblock In {\em Studies in Computational Intelligence (51), Evolutionary
+  Computation in Dynamic and Uncertain Environments}, pages 269--296.
+
+\bibitem[Sedighizadeh and Masehian, 2009]{sedighizadeh09}
+Sedighizadeh, D. and Masehian, E. (2009).
+\newblock Particle swarm optimization methods, taxonomy and applications.
+\newblock {\em International Journal of Computer Theory and Engineering},
+  1(5):486--502.
+
+\end{thebibliography}
