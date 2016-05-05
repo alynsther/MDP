@@ -75,6 +75,10 @@ public class MDPSolver {
     private static double[] utility = new double[NUM_STATES];
     private static int[] policy = new int[NUM_STATES];
 
+    // global variables for number of iterations
+    private static int numValueIterations = 0;
+    private static int numPolicyIterations = 0;
+
     /*****************************************************************************
      Function:  main
      Inputs:    args
@@ -144,6 +148,7 @@ public class MDPSolver {
         
         long end = System.currentTimeMillis();
         System.out.println("The duration of value iteration is " + (end-start) + " milliseconds");
+        System.out.println("Number of iterations for policy is " + numPolicyIterations);
 
     }
 
@@ -172,6 +177,9 @@ public class MDPSolver {
     		// for(int i = 0; i < NUM_STATES; i++){
     		// 	utility[i] = util2[i];
     		// }
+
+            ++numValueIterations;
+
     		delta = 0.0;
     		
     		//state 1
@@ -230,6 +238,10 @@ public class MDPSolver {
 
         do {
 
+            ++numPolicyIterations;
+
+            // System.out.println("Running");
+
             policyEvaluation();
 
             policyUnchanged = true;
@@ -237,7 +249,7 @@ public class MDPSolver {
             for (int s = 0; s < NUM_STATES; s++) {
                 
                 oldValComputed = false;
-
+                oldVal = 0.0;
                 maxVal = Double.NEGATIVE_INFINITY;
 
                 //action
@@ -247,7 +259,7 @@ public class MDPSolver {
                     for(int sP = 0; sP < NUM_STATES; sP++){
                         sum += T[s][a][sP] * utility[sP];
                         if (oldValComputed == false) {
-                            oldVal += T[s][policy[s]][s] * utility[sP];
+                            oldVal += T[s][policy[s]][sP] * utility[sP];
                         }
                     }//loop s2
 
@@ -269,7 +281,7 @@ public class MDPSolver {
                 // util2 = R[s1] + discountFactor * maxVal;
             }
 
-        } while (policyUnchanged == true);
+        } while (policyUnchanged == false);
     }
 
     public static void policyEvaluation() {
