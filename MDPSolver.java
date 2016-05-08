@@ -7,11 +7,12 @@
 
  
  Running instructions:
- javac MPDSolver.java
- java MPDSolver discount error key positive negative step solution
+ javac MDPSolver.java
+ java MDPSolver discount error key positive negative step solution
  
  java MDPSolver 0.99 1e-6 0.5 1 -1 -0.04 v
 
+ NOTE: Use a discount factor of less than 1.0 for Policy Iteration
  ******************************************************************************/
 
 /*
@@ -99,7 +100,7 @@ public class MDPSolver {
         System.out.println("    solution    = solution technique");
         System.out.println("                    v  = value iteration");
         System.out.println("                    p  = policy iteration iteration");
-        System.out.println("                    q  = Q learning");
+        System.out.println("                    a  = automatic for testing purposes");
         
         if(args.length != 7) {
             System.out.println("Please input the correct number of arguments given the guideline shown.");
@@ -115,15 +116,6 @@ public class MDPSolver {
     	stepCost = Double.parseDouble(args[5]);
         solutionTechnique = args[6];
     	
-    	//prints out command line input
-    	System.out.printf("Discount factor: %f\n", discountFactor);
-    	System.out.printf("Maximum State Utility Error: %f\n", maxStateUtilityError);
-    	System.out.printf("Key Loss Probability: %f\n", keyLossProbability);
-    	System.out.printf("Positive Terminal Reward: %f\n", positiveTerminalReward);
-    	System.out.printf("Negative Terminal Reward: %f\n", negativeTerminalReward);
-    	System.out.printf("Step Cost: %f\n", stepCost);
-        System.out.printf("Solution Technique: %s\n", solutionTechnique);
-    									
     	//initializes T and R
     	initializeMDP(T,R);
 
@@ -144,12 +136,29 @@ public class MDPSolver {
             policyIteration();
             numIterations = numPolicyIterations;
         }
+        else if (solutionTechnique.equals("a")) {
+            solutionTechnique = "automatic";
+        }
+        else {
+            System.out.println("The solution technique option is not available. Please input v or p or a.");
+            System.exit(1);
+        }
 
         long end = System.currentTimeMillis();
 
         printUtilitiesAndPolicy(utility, policy);
     
     	// show method that prints utilities and policy     
+        
+        
+        //prints out command line input
+        System.out.printf("Discount factor: %f\n", discountFactor);
+        System.out.printf("Maximum State Utility Error: %f\n", maxStateUtilityError);
+        System.out.printf("Key Loss Probability: %f\n", keyLossProbability);
+        System.out.printf("Positive Terminal Reward: %f\n", positiveTerminalReward);
+        System.out.printf("Negative Terminal Reward: %f\n", negativeTerminalReward);
+        System.out.printf("Step Cost: %f\n", stepCost);
+        System.out.printf("Solution Technique: %s\n", solutionTechnique);
         
         System.out.println("The duration of " + solutionTechnique + " is " + (end-start) + " milliseconds");
         System.out.println("Number of iterations for " + solutionTechnique + " is " + numIterations + " iterations" );
