@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 
-public class MDPSolverCopy {
+public class MDPSolver {
 
     /**********************************************************************/
     /* provided by Majercik */
@@ -64,8 +64,10 @@ public class MDPSolverCopy {
 
     // reward for transitions into +1-with-key state
     private static double positiveTerminalReward;
+    
     // reward for transition into -1 square
     private static double negativeTerminalReward;
+    
     // reward for all other transitions (step cost)
     private static double stepCost;
 
