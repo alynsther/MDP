@@ -3,7 +3,7 @@
  Author: Son Ngo, Venecia Xu, Adela Yang
  Date:   April 2016
  
- Description:
+ Description: Main file for Assignment 5
 
  
  Running instructions:
@@ -97,7 +97,7 @@ public class MDPSolver {
     public static void main (String[] args) {
 
         System.out.println();
-        System.out.println("java ValueIterationMDP discount error key positive negative step solution");
+        System.out.println("java MDPSolver discount error key positive negative step solution");
         System.out.println("    discount    = discount factor");
         System.out.println("    error       = maximum allowable error in the state utilities");
         System.out.println("    key         = key loss probability");
