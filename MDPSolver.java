@@ -31,9 +31,10 @@
 import java.io.*;
 import java.lang.Math.*;
 import java.util.Arrays;
+import java.util.Random;
 
 
-public class MDPSolver {
+public class MDPSolverCopy {
 
     /**********************************************************************/
     /* provided by Majercik */
@@ -83,6 +84,8 @@ public class MDPSolver {
     private static int numValueIterations = 0;
     private static int numPolicyIterations = 0;
 
+    
+    
     /*****************************************************************************
      Function:  main
      Inputs:    args
@@ -90,7 +93,6 @@ public class MDPSolver {
      Description: runs MDP algorithm
      *****************************************************************************/
     public static void main (String[] args) {
-    	//ValueIterationMDP MDP= new ValueIterationMDP();
 
         System.out.println();
         System.out.println("java ValueIterationMDP discount error key positive negative step solution");
@@ -103,7 +105,6 @@ public class MDPSolver {
         System.out.println("    solution    = solution technique");
         System.out.println("                    v  = value iteration");
         System.out.println("                    p  = policy iteration iteration");
-        System.out.println("                    a  = automatic for testing purposes");
         
         if(args.length != 7) {
             System.out.println("Please input the correct number of arguments given the guideline shown.");
@@ -122,12 +123,10 @@ public class MDPSolver {
     	//initializes T and R
     	initializeMDP(T,R);
 
-        //CHECK THIS FUNCTION
-    	//performs the valueIteration given T and R
-    	// valIter(T,R);
-
+        //counts number of iterations gone through
         int numIterations = 0;
-
+        
+        //runs the specified solution technique
         long start = System.currentTimeMillis();
         if (solutionTechnique.equals("v")) {
             solutionTechnique = "value iteration";
@@ -139,22 +138,16 @@ public class MDPSolver {
             policyIteration();
             numIterations = numPolicyIterations;
         }
-        else if (solutionTechnique.equals("a")) {
-            solutionTechnique = "automatic";
-        }
         else {
-            System.out.println("The solution technique option is not available. Please input v or p or a.");
+            System.out.println("The solution technique option is not available. Please input v or p.");
             System.exit(1);
         }
 
         long end = System.currentTimeMillis();
 
         printUtilitiesAndPolicy(utility, policy);
-    
-    	// show method that prints utilities and policy     
         
-        
-        //prints out command line input
+        //prints out statistics as command line input
         System.out.printf("Discount factor: %f\n", discountFactor);
         System.out.printf("Maximum State Utility Error: %f\n", maxStateUtilityError);
         System.out.printf("Key Loss Probability: %f\n", keyLossProbability);
@@ -166,118 +159,131 @@ public class MDPSolver {
         System.out.println("The duration of " + solutionTechnique + " is " + (end-start) + " milliseconds");
         System.out.println("Number of iterations for " + solutionTechnique + " is " + numIterations + " iterations" );
 
-    }
+    } // main
+    
+    
 
     /*****************************************************************************
-     Function:  valIter
+     Function:  valueIteration
      Inputs:    args
      Returns:   nothing
-     Description: value iteration program
+     Description: value iteration solution
      *****************************************************************************/
     public static void valueIteration(){
-    	double delta; // maximum change in the utility of any state in an iteration
-    	// double[] util2 = new double[NUM_STATES]; //second utiltiy array
-    	double maxVal = Double.NEGATIVE_INFINITY; //stores the updates maxSum of a given action
-    	double sum = 0; // stores the updated sum the T[s1][a][s2]*U[s1] for a given action
-        double util2 = 0;      //stores the updated utility at the current state
-    	int count = 0; //stores the number of iterations
+    	double delta;           //maximum change in the utility of any state in an iteration
+    	double maxVal = Double.NEGATIVE_INFINITY; //the updated maxSum of a given action
+    	double sum = 0;        //the updated sum of T[s1][a][s2]*U[s1] for a given action
+        double util2 = 0;      //the updated utility at the current state
     	
-    	//initialize both utility arrays to 0
-    	// for(int i=0; i< NUM_STATES; i++){
-    	// 	utility[i] = 0;
-    	// 	util2[i] = 0;
-    	// }
-    	
+        //iterate in-place until the error function is greater than delta
         do{
-    		//set utility=util2
-    		// for(int i = 0; i < NUM_STATES; i++){
-    		// 	utility[i] = util2[i];
-    		// }
-
+            
+            //increment number of value iterations
             ++numValueIterations;
 
     		delta = 0.0;
     		
-    		//state 1
-    		for(int s1 = 0; s1 < NUM_STATES; s1++){
-    			maxVal = Double.NEGATIVE_INFINITY;
-    			//action
+            //iterate through every state for value iteration 
+    		for(int s = 0; s < NUM_STATES; s++){
+    			maxVal = Double.NEGATIVE_INFINITY;  //reset the max value
+                
+    			//find the max value and update the subsequent policy
     			for(int a = 0; a < NUM_ACTIONS; a++){
-    				sum = 0.0;
-    				//state 2
-    				for(int s2 = 0; s2 < NUM_STATES; s2++){
-    					sum += T[s1][a][s2] * utility[s2];
-    				}//loop s2
+    				sum = 0.0;  //reset the sum
+                    
+    				for(int sP = 0; sP < NUM_STATES; sP++){
+    					sum += T[s][a][sP] * utility[sP];
+    				}
     				
     				//updates maxVal and sets policy for action with maxVal
     				if(sum > maxVal){
-    					policy[s1] = a;
+    					policy[s] = a;
     					maxVal = sum;
     				} 				    				
-    			}//loop a
+    			}
     			
-    			// util2[s1] = R[s1] + discountFactor * maxVal;
-                util2 = R[s1] + discountFactor * maxVal;
+                //find the updated utility
+                util2 = R[s] + discountFactor * maxVal;
 
-    			if(Math.abs(util2 - utility[s1]) > delta){
-					delta = Math.abs(util2 - utility[s1]);
+                //recalculate delta if needed
+    			if(Math.abs(util2 - utility[s]) > delta){
+					delta = Math.abs(util2 - utility[s]);
     			}
 
-                utility[s1] = util2;
-			}//loop s1
-    		count++;
+                //in-place update of utility
+                utility[s] = util2;
+			}
+            
     	} while(delta >= (maxStateUtilityError * (1-discountFactor) / discountFactor));
-    	
-    	System.out.printf("This is the number of iterations: %d\n", count);
-    }
+        
+    } // valueIteration
 
-    public static void createRandomPolicy() {
-        for (int i = 0; i < NUM_STATES; i++){
-            policy[i] = N;
-        }
-    }
     
-    // //WHO WRITES THIS: 
+    
+    /*****************************************************************************
+     Function:  createRandomPolicy
+     Inputs:    none
+     Returns:   none
+     Description: create a new policy randomly
+     *****************************************************************************/
+    public static void createRandomPolicy() {
+        Random rand = new Random();
+
+        for (int i = 0; i < NUM_STATES; i++){
+            //create a random action by assigning a random number from 0 to 3
+            policy[i] = rand.nextInt(NUM_ACTIONS);
+        }
+        
+    } // createRandomPolicy
+    
+    
+    
+    /*****************************************************************************
+     Function:  policyIteration
+     Inputs:    args
+     Returns:   nothing
+     Description: policy iteration solution
+     *****************************************************************************/
     public static void policyIteration() {
 
         boolean policyUnchanged = true;
-
         boolean oldValComputed = false;
-
         double maxVal, sum = 0.0;
-
         double oldVal = 0.0;
-
         int bestAction = N;
 
+        //create a random policy to start with
         createRandomPolicy();
 
+        //iterate until policy does not change
         do {
 
             ++numPolicyIterations;
 
-            // System.out.println("Running");
-
+            //update utility according to the new poliy
             policyEvaluation();
 
+            //reset boolean indicator to true
             policyUnchanged = true;
 
             for (int s = 0; s < NUM_STATES; s++) {
                 
+                //reset old and max value
                 oldValComputed = false;
                 oldVal = 0.0;
                 maxVal = Double.NEGATIVE_INFINITY;
 
-                //action
+                //update max value, old value, and the best action from a given state
                 for(int a = 0; a < NUM_ACTIONS; a++){
                     sum = 0.0;
-                    //state 2
+                    
+                    //evaluating utility by taking a certain action
                     for(int sP = 0; sP < NUM_STATES; sP++){
                         sum += T[s][a][sP] * utility[sP];
                         if (oldValComputed == false) {
                             oldVal += T[s][policy[s]][sP] * utility[sP];
                         }
-                    }//loop s2
+                    }
 
                     oldValComputed = true;
                     
@@ -286,122 +292,96 @@ public class MDPSolver {
                         bestAction = a;
                         maxVal = sum;
                     }                                   
-                }//loop a
+                }
 
+                //reassign when find new max
                 if (maxVal > oldVal) {
                     policy[s] = bestAction;
                     policyUnchanged = false;
                 }
                 
-                // util2[s1] = R[s1] + discountFactor * maxVal;
-                // util2 = R[s1] + discountFactor * maxVal;
             }
 
         } while (policyUnchanged == false);
-    }
+        
+    } // policyIteration
 
+    
+    
+    /*****************************************************************************
+     Function:  policyEvaluation
+     Inputs:    args
+     Returns:   nothing
+     Description: computes the policy using matrices
+     *****************************************************************************/
     public static void policyEvaluation() {
 
         double[][] coefficientMatrix = new double[NUM_STATES][NUM_STATES];
-
         double[][] valueMatrix = new double[NUM_STATES][1];
 
-        // Arrays.fill(newUtility, 0.0);
-
-        // for(int s1 = 0; s1 < NUM_STATES; s1++){
-        //         maxVal = Double.NEGATIVE_INFINITY;
-        //         //action
-        //         for(int a = 0; a < NUM_ACTIONS; a++){
-        //             sum = 0;
-        //             //state 2
-        //             for(int s2 = 0; s2 < NUM_STATES; s2++){
-        //                 sum += T[s1][a][s2] * oldUtility[s2];
-        //             }//loop s2
-                    
-        //             //updates maxVal and sets policy for action with maxVal
-        //             if(sum > maxVal){
-        //                 policy[s1] = a;
-        //                 maxVal = sum;
-        //             }                                   
-        //         }//loop a
-                
-        //         // util2[s1] = R[s1] + discountFactor * maxVal;
-        //         util2 = R[s1] + discountFactor * maxVal;
-
-        //         utility[s1] = util2;
-        //     }//loop s1
-        // }
-
+        //going through all states to construct NUM_STATES linear equations
         for (int s = 0; s < NUM_STATES; s++) {
 
+            //going through all possible states that can be reached from the current state
             for (int sP = 0; sP < NUM_STATES; sP++) {
 
+                //construct the coefficients for the left hand side
                 if (s != sP) {
                     coefficientMatrix[s][sP] = discountFactor * T[s][policy[s]][sP] * (-1.0);
                 }
                 else {
                     coefficientMatrix[s][sP] = 1 - discountFactor * T[s][policy[s]][sP];
                 }
-
-                // if (s == 40) {
-                //     System.out.println(T[s][policy[s]][sP]);
-                // }
-
             }
 
+            //construct the coefficients for the right hand side
             valueMatrix[s][0] = R[s];
         }
 
         Matrix CoM = new Matrix(coefficientMatrix);
         Matrix VaM = new Matrix(valueMatrix);
 
+        //solve system of linear equations to find updated utility given the policy
         Matrix ResultM = CoM.solve(VaM);
 
+        //update the utility using the solution to the system
         for (int i = 0; i < NUM_STATES; i++) {
             utility[i] = ResultM.getArray()[i][0];
-            // System.out.println(utility[i]);
         }
 
-        // System.out.println(NUM_STATES);
-
-        // for (int i = 0; i < NUM_STATES; i++) {
-        //     for (int j = 0; j < NUM_STATES; j++) {
-        //         System.out.print(coefficientMatrix[i][j]);
-        //     }
-        //     System.out.println("");
-        // }
-
-    }
+    } // policyEvaluation
  
-
-    // print out the current utilities and action choices for all states
-    // given the utility function and policy passed in.  the utility function
-    // is specified as an array of doubles representing utilities for the
-    // states, and the policy is specified as an array of integers representing
-    // optimal actions for the states
-    //
+    
+    
+    /*****************************************************************************
+     Function:  printUtilitiesAndPolicy
+     Inputs:    utility and policy arrays
+     Returns:   nothing
+     Description: prints the current utilities and action choices for all states
+     *****************************************************************************/
     public static void printUtilitiesAndPolicy(double[] utility, int[] policy) {
         
-        // formateString is a C-style format string to use with Java's printf-wannabe
-        // method; the format string specifies what the output should look like, including
-        // format specifications for values, and the actual items to be printed are
-        // the arguments to printf that come after the format string.  in the following,
-        // if PRINT_UTILITY_PRECISION is 2, the format string would be:
-        //
-        //    "%s%2d%s %.2f %s    "
-        //
-        // This means that the output will be:
-        //    a string,
-        //    an integer that should be printed in 2 spaces,
-        //    a string,
-        //    a space (spaces in the format string are printed literally),
-        //    a floating-point number printed in 5 spaces with
-        //          PRINT_UTILITY_PRECISION digits after the decimal point,
-        //    a space,
-        //    a string, and
-        //    4 spaces.
-        //
-        // The arguments that come after specify *what* string, *what* integer, etc.
+        /* formatString is a C-style format string to use with Java's printf-wannabe
+         * method; the format string specifies what the output should look like, including
+         * format specifications for values, and the actual items to be printed are
+         * the arguments to printf that come after the format string.  in the following,
+         * if PRINT_UTILITY_PRECISION is 2, the format string would be:
+         *
+         *    "%s%2d%s %.2f %s    "
+         *
+         * This means that the output will be:
+         *    a string,
+         *    an integer that should be printed in 2 spaces,
+         *    a string,
+         *    a space (spaces in the format string are printed literally),
+         *    a floating-point number printed in 5 spaces with
+         *          PRINT_UTILITY_PRECISION digits after the decimal point,
+         *    a space,
+         *    a string, and
+         *    4 spaces.
+         *
+         * The arguments that come after specify *what* string, *what* integer, etc.
+         */
         
         String formatString = "%s%2d%s %5." + PRINT_UTILITY_PRECISION + "f %s    ";
         for(int s = 58 ; s <= 64 ; s += 2)
@@ -473,13 +453,16 @@ public class MDPSolver {
         System.out.println();
         System.out.println();
         
-    } // printUtilitiesAndPolicy
+    } // printUtilitiesandPolicy
     
     
     
-    
-    // return appropriate string given action number
-    //
+    /*****************************************************************************
+     Function:  action
+     Inputs:    int
+     Returns:   string
+     Description: interprets the given int as a string
+     *****************************************************************************/
     public static String action(int a) {
         
         switch (a) {
@@ -500,10 +483,12 @@ public class MDPSolver {
     
     
     
-    // initialize T, the 3-dimensional array representing the transition
-    // function, and R, the 1-dimensional array representing the reward
-    // function
-    //
+    /*****************************************************************************
+     Function:  initializeMDP
+     Inputs:    T and R
+     Returns:   nothing
+     Description: initializes and resets all reward and transition functions
+     *****************************************************************************/
     public static void initializeMDP(double[][][] T, double[] R) {
         
         // set up reward function
