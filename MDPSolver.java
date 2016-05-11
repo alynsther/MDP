@@ -5,17 +5,33 @@
  
  Description: Main file for Assignment 5
 
- 
  Running instructions:
  javac MDPSolver.java
  java MDPSolver discount error key positive negative step solution
  
- java MDPSolver 0.99 1e-6 0.5 1 -1 -0.04 v
+ // args
+ java MDPSolver 0.99 1e-6 0.5 1 -1 -0.04 v   
+ // tests
+ java MDPSolver
  
  Overleaf:
  https://www.overleaf.com/5103746gzwvtg 
 
- NOTE: Use a discount factor of less than 1.0 for Policy Iteration
+ NOTE: 
+ Use a discount factor of less than 1.0 for Policy Iteration
+
+ The following global variables:
+    private static double[] d = {0.0, 0.5, 0.95, 0.99}; //discount
+    private static double[] k = {0.0, 0.05, 0.5, 0.95}; //key
+    private static double[] p = {1.0, 50.0, 100.0}; //positive
+    private static double[] ne = {-100.0, -50.0, -1.0}; //negative
+    private static double[] st = {-100.0, -0.05, 0.0, 0.05, 100.0}; //step
+ can be preset by the tester to the desired values. The program will automatically run it all.
+
+
+ results.csv contains the iterations
+ results.txt contains the policy and utilites of the run
+ REMOVE result.csv/.txt AFTER EVERY RUN OR ELSE IT WILL APPEND TO THE PREXISTING FILE
  ******************************************************************************/
 
 /*
@@ -89,6 +105,15 @@ public class MDPSolver {
     private static int numPolicyIterations = 0;
     private static int numModifiedValueIterations = 0;
 
+    private static double[] d = {0.0, 0.5, 0.95, 0.99}; //discount
+    private static double[] k = {0.0, 0.05, 0.5, 0.95}; //key
+    private static double[] p = {1.0, 50.0, 100.0}; //positive
+    private static double[] ne = {-100.0, -50.0, -1.0}; //negative
+    private static double[] st = {-100.0, -0.05, 0.0, 0.05, 100.0}; //step
+
+    private static PrintStream out = System.out;
+    private static PrintStream put = System.out;
+    private static PrintStream std = System.out;
     
     
     /*****************************************************************************
@@ -98,7 +123,249 @@ public class MDPSolver {
      Description: runs MDP algorithm
      *****************************************************************************/
     public static void main (String[] args) {
+        if(args.length != 0){
+            //if input, then run command line args
+            runCommands(args);
+        }
+        else {
+            // if no input, then run the tests
+            runTests();
+        }
 
+    } // main
+
+     /*****************************************************************************
+     Function:  runTests
+     Inputs:    args
+     Returns:   nothing
+     Description: run test and export in to csv file
+     The test script for testing the parameters:
+
+     *****************************************************************************/
+    public static void runTests() {
+        try
+        {
+            FileOutputStream dos = new FileOutputStream("results.txt", true); 
+            put = new PrintStream(dos);
+            System.setOut(put);     
+        }
+        catch (FileNotFoundException ex)  
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        try
+        {
+            FileOutputStream fos = new FileOutputStream("results.csv", true); 
+            out = new PrintStream(fos);
+            System.setOut(out);     
+        }
+        catch (FileNotFoundException ex)  
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        // constant across all tests
+        maxStateUtilityError = 0.000006;
+        solutionTechnique = "value iteration";
+
+        //default values
+        discountFactor = 0.99;
+        keyLossProbability = 0.5;
+        positiveTerminalReward = 1.0;
+        negativeTerminalReward = -1.0;
+        stepCost = -0.04;
+
+        //loops through all the variables that are changing
+        for(int i = 0; i < 5; i++){
+            //in each case, tests all the choices of the given variable, with the default values
+            //prints out the iterations and policies and utilities into different files
+            switch(i){
+                case 0: //discount factor
+                    System.out.println("DISCOUNT FACTOR TESTS\n");
+                    System.setOut(put);
+                    System.out.println("DISCOUNT FACTOR TESTS\n");
+                    System.setOut(out);
+
+                    for(int j=0; j<d.length; j++){
+                        System.out.printf("%f,", d[j]);
+                    }
+                    System.out.println();
+                    for(int j=0; j<d.length; j++){
+                        resetConditions();
+                        discountFactor = d[j];
+                        runPrimaryFunctions();
+
+                        System.setOut(put);
+                        System.out.printf("%f\n", d[j]);
+                        printUtilitiesAndPolicy(utility, policy);
+                        System.out.println();
+                        System.setOut(out);
+                    }
+                    System.out.println();
+
+                    System.setOut(std);
+                    System.out.println("DISCOUNT FACTOR TESTS DONE\n");
+                    System.setOut(out);
+
+                    discountFactor = 0.99;
+                    break;
+                case 1: // key loss probability
+                    System.out.println("KEY LOSS PROBABILITY TESTS\n");
+                    System.setOut(put);
+                    System.out.println("KEY LOSS PROBABILITY TESTS\n");
+                    System.setOut(out);
+
+                    for(int j=0; j<k.length; j++){
+                        System.out.printf("%f,", k[j]);
+                    }
+                    System.out.println();
+                    for(int j=0; j<k.length; j++){
+                        resetConditions();
+                        keyLossProbability = k[j];
+                        runPrimaryFunctions();
+
+                        System.setOut(put);
+                        System.out.printf("%f\n", k[j]);
+                        printUtilitiesAndPolicy(utility, policy);
+                        System.out.println();
+                        System.setOut(out);
+                    }
+                    System.out.println();
+
+                    System.setOut(std);
+                    System.out.println("KEY LOSS PROBABILITY DONE\n");
+                    System.setOut(out);
+
+                    keyLossProbability = 0.5;
+                    break;
+                case 2: // positiver terminal reward 
+                    System.out.println("POSITIVE TERMINAL REWARD TESTS\n");
+                    System.setOut(put);
+                    System.out.println("POSITIVE TERMINAL REWARD TESTS\n");
+                    System.setOut(out);
+
+                    for(int j=0; j<p.length; j++){
+                        System.out.printf("%f,", p[j]);
+                    }
+                    System.out.println();
+                    for(int j=0; j<p.length; j++){
+                        resetConditions();
+                        positiveTerminalReward = p[j];
+                        runPrimaryFunctions();
+
+                        System.setOut(put);
+                        System.out.printf("%f\n", p[j]);
+                        printUtilitiesAndPolicy(utility, policy);
+                        System.out.println();
+                        System.setOut(out);
+                    }
+                    System.out.println();
+
+                    System.setOut(std);
+                    System.out.println("POSITIVE TERMINAL REWARD DONE\n");
+                    System.setOut(out);
+
+                    positiveTerminalReward = 1.0;
+                    break;
+                case 3: // negative terminal reward
+                    System.out.println("NEGATIVE TERMINAL REWARD TESTS\n");
+                    System.setOut(put);
+                    System.out.println("NEGATIVE TERMINAL REWARD TESTS\n");
+                    System.setOut(out);
+
+                    for(int j=0; j<ne.length; j++){
+                        System.out.printf("%f,", ne[j]);
+                    }
+                    System.out.println();
+                    for(int j=0; j<ne.length; j++){
+                        resetConditions();
+                        negativeTerminalReward = ne[j];
+                        runPrimaryFunctions();
+
+                        System.setOut(put);
+                        System.out.printf("%f\n", ne[j]);
+                        printUtilitiesAndPolicy(utility, policy);
+                        System.out.println();
+                        System.setOut(out);
+                    }
+                    System.out.println();
+
+                    System.setOut(std);
+                    System.out.println("NEGATIVE TERMINAL REWARD TESTS DONE\n");
+                    System.setOut(out);
+
+                    negativeTerminalReward = -1.0;
+                    break;
+                case 4: // step cost
+                    System.out.println("STEP COST TESTS\n");
+                    System.setOut(put);
+                    System.out.println("STEP COST TESTS\n");
+                    System.setOut(out);
+
+                    for(int j=0; j<st.length; j++){
+                        System.out.printf("%f,", st[j]);
+                    }
+                    System.out.println();
+                    for(int j=0; j<st.length; j++){
+                        resetConditions();
+                        stepCost = st[j];
+                        runPrimaryFunctions();
+
+                        System.setOut(put);
+                        System.out.printf("%f\n", st[j]);
+                        printUtilitiesAndPolicy(utility, policy);
+                        System.out.println();
+                        System.setOut(out);
+                    }
+                    System.out.println();
+
+                    System.setOut(std);
+                    System.out.println("STEP COST TESTS DONE\n");
+                    System.setOut(out);
+
+                    stepCost = -0.04;
+                    break;
+                default:
+                    System.out.println("ERROR IN TESTING\n");
+                    break;
+            }
+        }
+    }
+
+    /*****************************************************************************
+     Function:  resetConditions
+     Inputs:    args
+     Returns:   nothing
+     Description: resets the shared variables for the next run
+     *****************************************************************************/
+    public static void resetConditions() {
+        numValueIterations = 0;
+        utility = new double[NUM_STATES];
+        policy = new int[NUM_STATES];
+    }
+
+    /*****************************************************************************
+     Function:  runPrimaryFunctions
+     Inputs:    args
+     Returns:   nothing
+     Description: consolidate necessary functions to calculate policy
+     *****************************************************************************/
+    public static void runPrimaryFunctions() {
+        initializeMDP(T,R);
+        valueIteration();
+        System.out.printf("%d,", numValueIterations);
+    }
+        
+
+    
+    /*****************************************************************************
+     Function:  runCommands
+     Inputs:    args
+     Returns:   nothing
+     Description: runs the tests given the terminal commands
+     *****************************************************************************/
+    public static void runCommands(String[] args) {
         System.out.println();
         System.out.println("java MDPSolver discount error key positive negative step solution");
         System.out.println("    discount    = discount factor");
@@ -115,18 +382,18 @@ public class MDPSolver {
             System.out.println("Please input the correct number of arguments given the guideline shown.");
             System.exit(1);
         }
-    	
-    	//gets and sets values from command line
-    	discountFactor = Double.parseDouble(args[0]);
-    	maxStateUtilityError = Double.parseDouble(args[1]);
-    	keyLossProbability = Double.parseDouble(args[2]);
-    	positiveTerminalReward = Double.parseDouble(args[3]);
-    	negativeTerminalReward = Double.parseDouble(args[4]);
-    	stepCost = Double.parseDouble(args[5]);
+        
+        //gets and sets values from command line
+        discountFactor = Double.parseDouble(args[0]);
+        maxStateUtilityError = Double.parseDouble(args[1]);
+        keyLossProbability = Double.parseDouble(args[2]);
+        positiveTerminalReward = Double.parseDouble(args[3]);
+        negativeTerminalReward = Double.parseDouble(args[4]);
+        stepCost = Double.parseDouble(args[5]);
         solutionTechnique = args[6];
-    	
-    	//initializes T and R
-    	initializeMDP(T,R);
+        
+        //initializes T and R
+        initializeMDP(T,R);
 
         //counts number of iterations gone through
         int numIterations = 0;
@@ -169,9 +436,8 @@ public class MDPSolver {
         System.out.println("The duration of " + solutionTechnique + " is " + (end-start) + " milliseconds");
         System.out.println("Number of iterations for " + solutionTechnique + " is " + numIterations + " iterations" );
         System.out.println("Number of iterations for modifiedValueIteration is " + numModifiedValueIterations + " iterations" );
+    }
 
-    } // main
-    
     
 
     /*****************************************************************************
@@ -489,58 +755,58 @@ public class MDPSolver {
         
         String formatString = "%s%2d%s %5." + PRINT_UTILITY_PRECISION + "f %s    ";
         for(int s = 58 ; s <= 64 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         
         for(int s = 59 ; s <= 63 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         System.out.println();
         
         
         for(int s = 50 ; s <= 56 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         
         for(int s = 51 ; s <= 57 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         System.out.println();
         
         
         for(int s = 40 ; s <= 48 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         
         for(int s = 41 ; s <= 49 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         System.out.println();
         
         
         for(int s = 30 ; s <= 38 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         
         for(int s = 31 ; s <= 39 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         System.out.println();
         
         
         for(int s = 0 ; s <= 14 ; s += 2) {
             if (s < 10)
-                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
             else
-                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         }
         System.out.println();
         
         for(int s = 1 ; s <= 15 ; s += 2) {
             if (s < 10)
-                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
             else
-                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+                System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         }
         System.out.println();
         System.out.println();
@@ -548,12 +814,12 @@ public class MDPSolver {
         
         System.out.print("    ");
         for(int s = 16 ; s <= 28 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         
         System.out.print("    ");
         for(int s = 17 ; s <= 29 ; s += 2)
-            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + ")");
+            System.out.printf(formatString, "(", s, ")", utility[s], "(" + action(policy[s]) + "),");
         System.out.println();
         System.out.println();
         
