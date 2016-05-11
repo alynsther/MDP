@@ -1,5 +1,5 @@
 /*****************************************************************************
- File:   MDPSolver.java
+ File:   MDPSolver.java (for experiment)
  Author: Son Ngo, Venecia Xu, Adela Yang
  Date:   April 2016
  
@@ -82,9 +82,12 @@ public class MDPSolver {
     private static double[] utility = new double[NUM_STATES];
     private static int[] policy = new int[NUM_STATES];
 
+    private static int[] truePolicy = new int[NUM_STATES];
+
     // global variables for number of iterations
     private static int numValueIterations = 0;
     private static int numPolicyIterations = 0;
+    private static int numModifiedValueIterations = 0;
 
     
     
@@ -130,10 +133,16 @@ public class MDPSolver {
         
         //runs the specified solution technique
         long start = System.currentTimeMillis();
+        
         if (solutionTechnique.equals("v")) {
             solutionTechnique = "value iteration";
             valueIteration();
             numIterations = numValueIterations;
+            // truePolicy = policy.clone();
+            // createRandomPolicy();
+            // resetUtility();
+            // printUtilitiesAndPolicy(utility, policy);
+            // modifiedValueIteration(); 
         }
         else if (solutionTechnique.equals("p")) {
             solutionTechnique = "policy iteration";
@@ -144,7 +153,6 @@ public class MDPSolver {
             System.out.println("The solution technique option is not available. Please input v or p.");
             System.exit(1);
         }
-
         long end = System.currentTimeMillis();
 
         printUtilitiesAndPolicy(utility, policy);
@@ -160,6 +168,7 @@ public class MDPSolver {
         
         System.out.println("The duration of " + solutionTechnique + " is " + (end-start) + " milliseconds");
         System.out.println("Number of iterations for " + solutionTechnique + " is " + numIterations + " iterations" );
+        System.out.println("Number of iterations for modifiedValueIteration is " + numModifiedValueIterations + " iterations" );
 
     } // main
     
@@ -220,7 +229,65 @@ public class MDPSolver {
         
     } // valueIteration
 
-    
+    /*****************************************************************************
+     Function:  valueIteration
+     Inputs:    args
+     Returns:   nothing
+     Description: value iteration solution
+     *****************************************************************************/
+    public static void modifiedValueIteration(){
+        double delta;           //maximum change in the utility of any state in an iteration
+        double maxVal = Double.NEGATIVE_INFINITY; //the updated maxSum of a given action
+        double sum = 0;        //the updated sum of T[s1][a][s2]*U[s1] for a given action
+        double util2 = 0;      //the updated utility at the current state
+        
+        //iterate in-place until the error function is greater than delta
+        do{
+            
+            //increment number of value iterations
+            ++numModifiedValueIterations;
+
+            delta = 0.0;
+            
+            //iterate through every state for value iteration 
+            for(int s = 0; s < NUM_STATES; s++){
+                maxVal = Double.NEGATIVE_INFINITY;  //reset the max value
+                
+                //find the max value and update the subsequent policy
+                for(int a = 0; a < NUM_ACTIONS; a++){
+                    sum = 0.0;  //reset the sum
+                    
+                    for(int sP = 0; sP < NUM_STATES; sP++){
+                        sum += T[s][a][sP] * utility[sP];
+                    }
+                    
+                    //updates maxVal and sets policy for action with maxVal
+                    if(sum > maxVal){
+                        policy[s] = a;
+                        maxVal = sum;
+                    }                                   
+                }
+                
+                //find the updated utility
+                util2 = R[s] + discountFactor * maxVal;
+
+                //recalculate delta if needed
+                if(Math.abs(util2 - utility[s]) > delta){
+                    delta = Math.abs(util2 - utility[s]);
+                }
+
+                //in-place update of utility
+                utility[s] = util2;
+            }
+
+            if (comparePolicy(policy) == true) {
+                printUtilitiesAndPolicy(utility, policy);
+                break;
+            }
+            
+        } while(delta >= (maxStateUtilityError * (1-discountFactor) / discountFactor));
+        
+    } // valueIteration
     
     /*****************************************************************************
      Function:  createRandomPolicy
@@ -237,8 +304,20 @@ public class MDPSolver {
         }
         
     } // createRandomPolicy
-    
-    
+
+    //function used to compare current policy with optimal policy
+    public static boolean comparePolicy(int[] currentPolicy) {
+        printPolicy(truePolicy);
+        printPolicy(currentPolicy);
+        for (int i = 0; i < NUM_STATES; i++){
+            if (i != 44 && i != 45 && i != 48 && i != 49 && i != 28 && i != 29) {
+                if (truePolicy[i] != currentPolicy[i]) {
+                    return false;
+                }
+            } 
+        }
+        return true;
+    }
     
     /*****************************************************************************
      Function:  policyIteration
@@ -309,7 +388,6 @@ public class MDPSolver {
     } // policyIteration
 
     
-    
     /*****************************************************************************
      Function:  policyEvaluation
      Inputs:    args
@@ -353,7 +431,31 @@ public class MDPSolver {
 
     } // policyEvaluation
  
-    
+    public static void resetUtility() {
+        for (int i = 0; i < NUM_STATES; i++){
+            utility[i] = 0.0;
+        }
+    }
+
+    public static void resetPolicy() {
+        createRandomPolicy();
+    }
+
+    public static void printUtility(double[] util) {
+        System.out.println("====================== START UTILITY ======================");
+        for (int i = 0; i < NUM_STATES; i++) {
+            System.out.println("U[" + i + "] = " + util[i]);
+        }
+        System.out.println("====================== END UTILITY ======================");
+    }
+
+    public static void printPolicy(int[] policyArray) {
+        System.out.println("====================== START POLICY ======================");
+        for (int i = 0; i < NUM_STATES; i++) {
+            System.out.println("Policy[" + i + "] = " + policyArray[i]);
+        }
+        System.out.println("====================== END POLICY ======================");
+    }
     
     /*****************************************************************************
      Function:  printUtilitiesAndPolicy
@@ -482,8 +584,6 @@ public class MDPSolver {
         }
         
     } // action
-    
-    
     
     /*****************************************************************************
      Function:  initializeMDP
