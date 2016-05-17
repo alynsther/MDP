@@ -10,9 +10,8 @@
  java MDPSolver discount error key positive negative step solution
  
  // args
- java MDPSolver 0.99 1e-6 0.5 1 -1 -0.04 v   
+ java MDPSolver 0.999999 1e-6 0.5 1 -1 -0.04 v   
  // tests
- java MDPSolver
  
  Overleaf:
  https://www.overleaf.com/5103746gzwvtg 
@@ -21,7 +20,7 @@
  Use a discount factor of less than 1.0 for Policy Iteration
 
  The following global variables:
-    private static double[] d = {0.0, 0.5, 0.95, 0.99}; //discount
+    private static double[] d = {0.0, 0.5, 0.95, 0.999999}; //discount
     private static double[] k = {0.0, 0.05, 0.5, 0.95}; //key
     private static double[] p = {1.0, 50.0, 100.0}; //positive
     private static double[] ne = {-100.0, -50.0, -1.0}; //negative
@@ -105,11 +104,11 @@ public class MDPSolver {
     private static int numPolicyIterations = 0;
     private static int numModifiedValueIterations = 0;
 
-    private static double[] d = {0.0, 0.5, 0.95, 0.99}; //discount
-    private static double[] k = {0.0, 0.05, 0.5, 0.95}; //key
+    private static double[] d = {0.0, 0.5, 0.95, 0.999999}; //discount
+    private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95}; //key
     private static double[] p = {1.0, 50.0, 100.0}; //positive
     private static double[] ne = {-100.0, -50.0, -1.0}; //negative
-    private static double[] st = {-100.0, -0.05, 0.0, 0.05, 100.0}; //step
+    private static double[] st = {-100.0, -0.04, -0.05, 0.0, 0.05, 100.0}; //step
 
     private static PrintStream out = System.out;
     private static PrintStream put = System.out;
@@ -166,11 +165,11 @@ public class MDPSolver {
         }
 
         // constant across all tests
-        maxStateUtilityError = 0.000006;
+        maxStateUtilityError = 0.000001;
         solutionTechnique = "value iteration";
 
         //default values
-        discountFactor = 0.99;
+        discountFactor = 0.999999;
         keyLossProbability = 0.5;
         positiveTerminalReward = 1.0;
         negativeTerminalReward = -1.0;
