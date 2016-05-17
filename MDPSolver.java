@@ -48,7 +48,6 @@ import java.lang.Math.*;
 import java.util.Arrays;
 import java.util.Random;
 
-
 public class MDPSolver {
 
     /**********************************************************************/
@@ -104,11 +103,11 @@ public class MDPSolver {
     private static int numPolicyIterations = 0;
     private static int numModifiedValueIterations = 0;
 
-    private static double[] d = {0.0, 0.5, 0.95, 0.999999}; //discount
+    private static double[] d = {0.0, 0.5, 0.6, 0.7, 0.8, 0.95, 0.999999}; //discount
     private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95}; //key
-    private static double[] p = {1.0, 50.0, 100.0}; //positive
-    private static double[] ne = {-100.0, -50.0, -1.0}; //negative
-    private static double[] st = {-100.0, -0.04, -0.05, 0.0, 0.05, 100.0}; //step
+    private static double[] p = {1.0, 5.0, 10.0, 15.0, 25.0, 50.0, 75.0, 100.0}; //positive
+    private static double[] ne = {-100.0, -75.0, -50.0, -25.0, -15.0, -10.0, -5.0, -1.0}; //negative
+    private static double[] st = {-100.0, -0.04, -0.05, 0.0, 0.01, 0.5, 1}; //step
 
     private static PrintStream out = System.out;
     private static PrintStream put = System.out;
@@ -142,6 +141,10 @@ public class MDPSolver {
 
      *****************************************************************************/
     public static void runTests() {
+
+        boolean success = (new File("results.csv")).delete();
+        boolean success2 = (new File("results.txt")).delete();
+
         try
         {
             FileOutputStream dos = new FileOutputStream("results.txt", true); 
@@ -162,7 +165,7 @@ public class MDPSolver {
         catch (FileNotFoundException ex)  
         {
             System.out.println(ex.getMessage());
-        }
+        } 
 
         // constant across all tests
         maxStateUtilityError = 0.000001;
@@ -207,7 +210,7 @@ public class MDPSolver {
                     System.out.println("DISCOUNT FACTOR TESTS DONE\n");
                     System.setOut(out);
 
-                    discountFactor = 0.99;
+                    discountFactor = 0.999999;
                     break;
                 case 1: // key loss probability
                     System.out.println("KEY LOSS PROBABILITY TESTS\n");
