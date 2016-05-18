@@ -104,10 +104,11 @@ public class MDPSolver {
     private static int numModifiedValueIterations = 0;
 
     private static double[] d = {0.0, 0.5, 0.6, 0.7, 0.8, 0.95, 0.999999}; //discount
-    private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95}; //key
+    private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95, 1.0}; //key
     private static double[] p = {1.0, 5.0, 10.0, 15.0, 25.0, 50.0, 75.0, 100.0}; //positive
     private static double[] ne = {-100.0, -75.0, -50.0, -25.0, -15.0, -10.0, -5.0, -1.0}; //negative
-    private static double[] st = {-100.0, -0.04, -0.05, 0.0, 0.01, 0.5, 1}; //step
+    // private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0, 0.001, 0.01}; //step
+    private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0};
 
     private static PrintStream out = System.out;
     private static PrintStream put = System.out;
@@ -189,6 +190,8 @@ public class MDPSolver {
                     System.out.println("DISCOUNT FACTOR TESTS\n");
                     System.setOut(out);
 
+                    initializeMDP(T,R);
+
                     for(int j=0; j<d.length; j++){
                         System.out.printf("%f,", d[j]);
                     }
@@ -217,6 +220,8 @@ public class MDPSolver {
                     System.setOut(put);
                     System.out.println("KEY LOSS PROBABILITY TESTS\n");
                     System.setOut(out);
+
+                    initializeMDP(T,R);
 
                     for(int j=0; j<k.length; j++){
                         System.out.printf("%f,", k[j]);
@@ -247,6 +252,8 @@ public class MDPSolver {
                     System.out.println("POSITIVE TERMINAL REWARD TESTS\n");
                     System.setOut(out);
 
+                    initializeMDP(T,R);
+
                     for(int j=0; j<p.length; j++){
                         System.out.printf("%f,", p[j]);
                     }
@@ -276,6 +283,8 @@ public class MDPSolver {
                     System.out.println("NEGATIVE TERMINAL REWARD TESTS\n");
                     System.setOut(out);
 
+                    initializeMDP(T,R);
+
                     for(int j=0; j<ne.length; j++){
                         System.out.printf("%f,", ne[j]);
                     }
@@ -304,6 +313,8 @@ public class MDPSolver {
                     System.setOut(put);
                     System.out.println("STEP COST TESTS\n");
                     System.setOut(out);
+
+                    initializeMDP(T,R);
 
                     for(int j=0; j<st.length; j++){
                         System.out.printf("%f,", st[j]);
