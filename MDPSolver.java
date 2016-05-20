@@ -20,11 +20,11 @@
  Use a discount factor of less than 1.0 for Policy Iteration
 
  The following global variables:
-    private static double[] d = {0.0, 0.5, 0.95, 0.999999}; //discount
-    private static double[] k = {0.0, 0.05, 0.5, 0.95}; //key
-    private static double[] p = {1.0, 50.0, 100.0}; //positive
-    private static double[] ne = {-100.0, -50.0, -1.0}; //negative
-    private static double[] st = {-100.0, -0.05, 0.0, 0.05, 100.0}; //step
+    private static double[] d = {0.0, 0.5, 0.6, 0.7, 0.8, 0.95, 0.999999}; //discount
+    private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95, 1.0}; //key
+    private static double[] p = {1.0, 5.0, 10.0, 15.0, 25.0, 50.0, 75.0, 100.0}; //positive
+    private static double[] ne = {-100.0, -75.0, -50.0, -25.0, -15.0, -10.0, -5.0, -1.0}; //negative
+    private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0}; //step
  can be preset by the tester to the desired values. The program will automatically run it all.
 
 
@@ -107,8 +107,7 @@ public class MDPSolver {
     private static double[] k = {0.0, 0.05, 0.15, 0.25, 0.5, 0.75, 0.95, 1.0}; //key
     private static double[] p = {1.0, 5.0, 10.0, 15.0, 25.0, 50.0, 75.0, 100.0}; //positive
     private static double[] ne = {-100.0, -75.0, -50.0, -25.0, -15.0, -10.0, -5.0, -1.0}; //negative
-    // private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0, 0.001, 0.01}; //step
-    private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0};
+    private static double[] st = {-100, -75, -50, -10, -5, -1, -0.5, -0.05, -0.04, 0.0}; //step
 
     private static PrintStream out = System.out;
     private static PrintStream put = System.out;
