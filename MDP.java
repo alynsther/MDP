@@ -1,5 +1,3 @@
-
-
 /*
 
   Framework for MDP Solver
@@ -7,9 +5,7 @@
 
  */
 
-
 import java.io.*;
-
 
 public class MDP {
 
@@ -57,9 +53,8 @@ public class MDP {
 
     public static void main (String[] args) {
 	
-    
-	// show method that prints utilities and policy
-	printUtilitiesAndPolicy(utility, policy);
+		// show method that prints utilities and policy
+		printUtilitiesAndPolicy(utility, policy);
 
     }
 

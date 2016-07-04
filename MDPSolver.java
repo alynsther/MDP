@@ -9,9 +9,8 @@
  javac MDPSolver.java
  java MDPSolver discount error key positive negative step solution
  
- // args
+ // default args
  java MDPSolver 0.999999 1e-6 0.5 1 -1 -0.04 v   
- // tests
  
  Overleaf:
  https://www.overleaf.com/5103746gzwvtg 
@@ -112,7 +111,6 @@ public class MDPSolver {
     private static PrintStream out = System.out;
     private static PrintStream put = System.out;
     private static PrintStream std = System.out;
-    
     
     /*****************************************************************************
      Function:  main
@@ -368,8 +366,6 @@ public class MDPSolver {
         valueIteration();
         System.out.printf("%d,", numValueIterations);
     }
-        
-
     
     /*****************************************************************************
      Function:  runCommands
